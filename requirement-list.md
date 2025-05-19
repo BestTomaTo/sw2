@@ -1,4 +1,7 @@
-# Requirement List – 자전거 공유 서비스
+33115
+https://github.com/BestTomaTo/sw2
+
+# Requirement List – 수정된 공유 자전거 대여 시스템
 
 | No. | 요구사항 | 관련 Use Case |
 |-----|----------|----------------|

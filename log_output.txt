@@ -1,0 +1,7 @@
+[spacejin2000] Mon May 19 23:19:38 2025 +0900 docs : use-case diagram 업로드 30be5b5
+[spacejin2000] Mon May 19 23:07:57 2025 +0900 docs : requirement-list 오타 수정 84714a8
+[spacejin2000] Mon May 19 23:06:51 2025 +0900 docs : Borrow -> Rental 명칭 변경 및 수정 da01f25
+[spacejin2000] Mon May 19 16:40:26 2025 +0900 docs : png 파일 수정 9a7f42c
+[spacejin2000] Mon May 19 16:25:13 2025 +0900 feat : communication-diagram png파일 업로드 8264b8e
+[spacejin2000] Sat May 17 21:11:01 2025 +0900 feat : rl, usd 추가 5fb2c8b
+[spacejin2000] Sat May 17 15:39:42 2025 +0900 first commit bd505d5
