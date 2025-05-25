@@ -11,7 +11,7 @@ using namespace std;
 #define OUTPUT_FILE_NAME "output.txt"
 
 // 함수 선언
-void doTask(MemberCollection* membercollection);
+void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, RentalCollection* rentalcollection);
 void join();
 void program_exit();
 
@@ -26,9 +26,11 @@ int main()
   out_fp.open(OUTPUT_FILE_NAME);
 
   MemberCollection membercollection;
+  BikeCollection bikecollection;
+  RentalCollection rentalcollection;
 
 cout << "debug1" << endl;
-  doTask(&membercollection);
+  doTask(&membercollection, &bikecollection, &rentalcollection);
 cout << "debug1_enddotask()" << endl;
 
   out_fp.close();
@@ -37,7 +39,7 @@ cout << "debug1_enddotask()" << endl;
   return 0;
 }
 
-void doTask(MemberCollection* membercollection)
+void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, RentalCollection* rentalcollection)
 {
   // 메뉴 파싱을 위한 level 구분을 위한 변수
   int menu_level_1 = 0, menu_level_2 = 0;
@@ -77,7 +79,7 @@ cout << "debug 2.1 Login" << endl;
           }
           case 2: // "2.2. 로그아웃"
           {
-cout << "debug 2.1 Login" << endl;
+cout << "debug 2.1 Logout" << endl;
             Logout logout(membercollection);
             break;
           }
@@ -88,9 +90,19 @@ cout << "debug 2.1 Login" << endl;
       {
         switch(menu_level_2)
         {
-          case 1:
+          case 1: // 3.1 자전거 등록
+cout << "debug 3.1 Enroll" << endl;
+          Enroll enroll(bikecollection);
           break;
-          case 2:
+        }
+        break;
+      }
+      case 4:
+      {
+        switch(menu_level_2)
+        {
+          case 1:
+          Rent rent(membercollection, bikecollection, rentalcollection);
           break;
         }
         break;

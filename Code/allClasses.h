@@ -26,7 +26,8 @@ class MemberCollection {
     public:
         MemberCollection();
         void createMember(string id, string pw, string pnum); 
-        void checkMember(string id, string pw);
+        void checkSignUpMember(string id, string pw);
+        Member* getLoginMember();
         void getLogoutMember();
 };
 
@@ -46,8 +47,28 @@ class BikeCollection {
         int cnt = 0; 
     public:
         BikeCollection();
-        void addNewBike(string bikeid, string bikename); 
-        void getBike();
+        void addNewBike(string bikeid, string bikename);
+        Bike* getBike(string bikeid, string bikename); 
+        
+};
+
+class Rental{
+    private:
+        Member* MemPointer;
+        Bike* BikePointer;
+    public:
+        Rental();
+        Rental(Member* member, Bike* bike);
+};
+
+class RentalCollection{
+    private:
+        Rental* RenArray;
+        int cnt = 0;
+    public:
+        RentalCollection();
+        void createRental(Member* member, Bike* bike);
+        void getRental();        
 };
 
 class SignUpUI {
@@ -84,6 +105,7 @@ class Login {
     private:
         LoginUI* loginUI;
         MemberCollection* MemCollPointer;
+        string whoislogin;
     public:
         Login(MemberCollection* MemberCollection);
         void checkMember(string id, string pw);
@@ -120,13 +142,37 @@ class EnrollUI {
         EnrollUI(Enroll* controller) : enrollcontroller(controller) {}
         void startUI();
         void insertBikeInfo();
+        void checkAdmin();
 };
 
 class Enroll {
     private:
         EnrollUI* enrollUI;
-        MemberCollection* MemCollPointer;
+        BikeCollection* BikeCollPointer;
     public:
-        Enroll(MemberCollection* MemberCollection);
-        void addNewBike();
+        Enroll(BikeCollection* BikeCollection);
+        void addNewBike(string bikeid, string bikename);
+};
+
+class Rent;
+class RentUI;
+
+class RentUI {
+    private:
+        Rent* rentcontroller;
+    public:
+        RentUI(Rent* controller) : rentcontroller(controller) {}
+        void startUI();
+        void rentBike();
+};
+
+class Rent{
+    private:
+        RentUI* rentUI;
+        MemberCollection* MemCollPointer;
+        BikeCollection* BikeCollPointer;
+        RentalCollection* RentCollPointer;
+    public: 
+        Rent(MemberCollection* MemberCollection, BikeCollection* BikeCollection, RentalCollection* RentalCollection);
+        void createRent();
 };

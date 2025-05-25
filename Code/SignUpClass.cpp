@@ -51,10 +51,15 @@ void MemberCollection::createMember(string id, string pw, string pnum){
     cout << id << pw << pnum << endl;
 }
 
-void MemberCollection::checkMember(string id, string pw) {
+void MemberCollection::checkSignUpMember(string id, string pw) {
 cout << "debug MemColl checkMem" << endl;
 cout << "debug cnt : " << cnt << endl; 
-    for (int i = 0; i < cnt; i++) {
+    if(id == "admin" && pw == "admin") {
+        cout << id << " " << pw << endl;
+        return;
+    }
+
+    for (int i=0; i<cnt; i++) {
         if (MemArray[i].getID() == id && MemArray[i].getPW() == pw) {
             MemArray[i].doLogin();
 cout << "debug login success" << endl;
@@ -63,8 +68,17 @@ cout << "debug login success" << endl;
     }    
 }
 
+Member* MemberCollection::getLoginMember() {
+    for (int i=0; i<cnt; i++) {
+        if (MemArray[i].getlogincheck() == 1) {
+            return &MemArray[i];
+        }
+    }
+    return NULL;
+}
+
 void MemberCollection::getLogoutMember() {
-    for (int i = 0; i < cnt; i++) {
+    for (int i=0; i<cnt; i++) {
         if (MemArray[i].getlogincheck() == 1) {
             MemArray[i].doLogout();
 cout << "debug logout success" << endl;
@@ -97,11 +111,55 @@ string Bike::getBikeName() {
 
 
 BikeCollection::BikeCollection() {
-    this->BikeArray = new Bike[100];
+    BikeArray = new Bike[100];
 }
 
 void BikeCollection::addNewBike(string bikeid, string bikename){
+    BikeArray[cnt++] = Bike(bikeid, bikename);
+    cout << bikeid << bikename << endl;
+}
 
+Bike* BikeCollection::getBike(string bikeid, string bikename) {
+    for (int i=0; i<cnt; i++) {
+        if (BikeArray[i].getBikeID() == bikeid && BikeArray[i].getBikeName() == bikename) {
+            cout << BikeArray[i].getBikeID() << " " << BikeArray[i].getBikeName() << endl;        
+            return &BikeArray[i];
+        }
+    }
+    return NULL;
+}
+
+
+// Rental
+
+
+Rental::Rental() {}
+
+Rental::Rental(Member* member, Bike* bike) {
+    MemPointer = member;
+    BikePointer = bike;
+}
+
+
+
+// RentalCollection
+
+
+RentalCollection::RentalCollection() {
+    RenArray = new Rental[100];
+}
+
+void RentalCollection::createRental(Member* member, Bike* bike) {
+    if (member == NULL) {
+        cout << "Error: 로그인된 회원이 없습니다." << endl;
+        return;
+    }
+    if (bike == NULL) {
+        cout << "Error: 해당 자전거가 없습니다." << endl;
+        return;
+    }
+    RenArray[cnt++] = Rental(member, bike);
+    cout << member->getID() << bike->getBikeID() << bike->getBikeName() << endl;
 }
 
 
@@ -159,7 +217,7 @@ Login::Login(MemberCollection* MemberCollection) {
 }
 
 void Login::checkMember(string id, string pw){
-    MemCollPointer->checkMember(id, pw);
+    MemCollPointer->checkSignUpMember(id, pw);
 }
 
 
@@ -191,7 +249,65 @@ void Logout::getLogoutMember() {
 
 // EnrollUI
 
-EnrollUI
+void EnrollUI::startUI() {
+    this->insertBikeInfo();
+}
+
+void EnrollUI::insertBikeInfo() {
+    string bikeid, bikename;
+    in_fp >> bikeid >> bikename;
+    enrollcontroller->addNewBike(bikeid, bikename);
+}
+
+void EnrollUI::checkAdmin() {
+    
+}
+
+// Enroll
 
 
+Enroll::Enroll(BikeCollection* BikeCollection) {
+    enrollUI = new EnrollUI(this);
+    this->BikeCollPointer = BikeCollection;
+    enrollUI->startUI();
+}
+
+
+void Enroll::addNewBike(string bikeid, string bikename) {
+    BikeCollPointer->addNewBike(bikeid, bikename);
+}
+
+// RentUI
+
+
+void RentUI::startUI() {
+    this->rentBike();
+}
+
+void RentUI::rentBike() {
+    string bikeid, bikename;
+    in_fp >> bikeid >> bikename;
+    rentcontroller->createRent();
+}
+
+
+// Rent
+
+
+Rent::Rent(MemberCollection* MemberCollection, BikeCollection* BikeCollection, RentalCollection* RentalCollection) {
+    rentUI = new RentUI(this);
+    MemCollPointer = MemberCollection;
+    BikeCollPointer = BikeCollection;
+    RentCollPointer = RentalCollection;
+    rentUI->startUI();
+}
+
+void Rent::createRent() {
+    string bikeid, bikename;
+    in_fp >> bikeid >> bikename;
+    Member* loginMember = MemCollPointer->getLoginMember();
+    Bike* rentBike = BikeCollPointer->getBike(bikeid, bikename);
+
+    RentCollPointer->createRental(loginMember, rentBike);
+}
 
