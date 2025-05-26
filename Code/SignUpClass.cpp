@@ -285,8 +285,6 @@ void RentUI::startUI() {
 }
 
 void RentUI::rentBike() {
-    string bikeid, bikename;
-    in_fp >> bikeid >> bikename;
     rentcontroller->createRent();
 }
 

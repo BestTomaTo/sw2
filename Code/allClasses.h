@@ -176,3 +176,23 @@ class Rent{
         Rent(MemberCollection* MemberCollection, BikeCollection* BikeCollection, RentalCollection* RentalCollection);
         void createRent();
 };
+
+class checkBike;
+class checkBikeUI;
+
+class checkBikeUI{
+    private:
+        checkBike* checkrentcontroller;
+    public:
+        checkBikeUI(checkBike* controller) : checkrentcontroller(controller) {}
+        void startUI();
+        void checkBike();
+};
+
+class checkBike{
+    private:
+        RentalCollection* RentCollPointer;
+    public:
+        checkBike(RentalCollection* RentalCollection);
+        void showBikeInfo();
+};
