@@ -3,6 +3,7 @@
 #include <string.h>
 #include <fstream>
 #include "allClasses.h"
+#include "FileManager.h"
 using namespace std;
 
 // 상수 선언
@@ -11,36 +12,25 @@ using namespace std;
 #define OUTPUT_FILE_NAME "output.txt"
 
 // 함수 선언
-void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, RentalCollection* rentalcollection);
-void join();
-void program_exit();
-
-// 변수 선언
-ofstream out_fp;
-ifstream in_fp;
+void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, RentalCollection* rentalcollection, FileManager* filemanager);
 
 int main()
 {
   // 파일 입출력을 위한 초기화
-  in_fp.open(INPUT_FILE_NAME);
-  out_fp.open(OUTPUT_FILE_NAME);
-
+  FileManager fileManager("input.txt", "output.txt");
   MemberCollection membercollection;
   BikeCollection bikecollection;
   RentalCollection rentalcollection;
 
-cout << "debug1" << endl;
-  doTask(&membercollection, &bikecollection, &rentalcollection);
-cout << "debug1_enddotask()" << endl;
-
-  out_fp.close();
-  in_fp.close();
+  doTask(&membercollection, &bikecollection, &rentalcollection, &filemanager);
 
   return 0;
 }
 
-void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, RentalCollection* rentalcollection)
+void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, RentalCollection* rentalcollection, FileManager* filemanager)
 {
+  ifstream& in_fp = fileManager.getInputStream();
+  ofstream& out_fp = fileManager.getOutputStream();
   // 메뉴 파싱을 위한 level 구분을 위한 변수
   int menu_level_1 = 0, menu_level_2 = 0;
   int is_program_exit = 0; 
@@ -115,7 +105,8 @@ void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, 
         {
           case 1:   // "6.1. 종료“ 메뉴 부분
             {
-      	      is_program_exit = 1;
+      	      Exit Exit;
+              is_program_exit = 1;
               break;
             }        
         }
@@ -123,6 +114,9 @@ void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, 
       }
     }   
   }
+  out_fp.close();
+  in_fp.close();
+
 }
 
 

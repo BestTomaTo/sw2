@@ -382,3 +382,29 @@ void checkBike::showBikeInfo() {
     RentCollPointer->getRental(loginMember);
     out_fp << "" << endl;
 }
+
+
+// ExitUI
+
+
+void ExitUI::startUI() {
+    this->doExit();
+}
+
+void ExitUI::doExit() {
+    exitcontroller->executeExit();
+}
+
+
+// Exit
+
+
+Exit::Exit() {
+    exitUI = new ExitUI(this);
+    exitUI->startUI();
+}
+
+void Exit::executeExit() {
+cout << "debug" << endl;
+    out_fp << "6.1 종료" << endl;
+}

@@ -200,3 +200,23 @@ class checkBike{
         checkBike(MemberCollection* MemberCollection, RentalCollection* RentalCollection);
         void showBikeInfo();
 };
+
+class Exit;
+class ExitUI;
+
+class ExitUI{
+    private:
+        Exit* exitcontroller;
+    public:
+        ExitUI(Exit* controller) : exitcontroller(controller) {}
+        void startUI();
+        void doExit();
+};
+
+class Exit{
+    private:
+        ExitUI* exitUI;
+    public:
+        Exit();
+        void executeExit();
+};
