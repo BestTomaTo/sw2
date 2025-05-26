@@ -43,13 +43,11 @@ void doTask(MemberCollection* membercollection, BikeCollection* bikecollection, 
 {
   // 메뉴 파싱을 위한 level 구분을 위한 변수
   int menu_level_1 = 0, menu_level_2 = 0;
-  int is_program_exit = 0;
-cout << "debug doTask" << endl;    
+  int is_program_exit = 0; 
   while(!is_program_exit)
   {
     // 입력파일에서 메뉴 숫자 2개를 읽기
     in_fp >> menu_level_1 >> menu_level_2;
-cout << "debug in_fp"<< menu_level_1 << menu_level_2 << endl;
     
     // 메뉴 구분 및 해당 연산 수행
     switch(menu_level_1)
@@ -60,7 +58,6 @@ cout << "debug in_fp"<< menu_level_1 << menu_level_2 << endl;
         {
           case 1:   // "1.1. 회원가입“ 메뉴 부분
           {
-cout << "debug 1.1 SignUp" << endl;
             SignUp signup(membercollection);
             break;
           }
@@ -73,13 +70,11 @@ cout << "debug 1.1 SignUp" << endl;
         {
           case 1: // "2.1. 로그인"
           {
-cout << "debug 2.1 Login" << endl;
             Login login(membercollection);
             break;
           }
           case 2: // "2.2. 로그아웃"
           {
-cout << "debug 2.1 Logout" << endl;
             Logout logout(membercollection);
             break;
           }
@@ -91,8 +86,7 @@ cout << "debug 2.1 Logout" << endl;
         switch(menu_level_2)
         {
           case 1: // 3.1 자전거 등록
-cout << "debug 3.1 Enroll" << endl;
-          Enroll enroll(bikecollection);
+          Enroll enroll(membercollection, bikecollection);
           break;
         }
         break;
@@ -106,6 +100,14 @@ cout << "debug 3.1 Enroll" << endl;
           break;
         }
         break;
+      }
+      case 5:
+      {
+        switch(menu_level_2)
+        {
+          case 1:
+          checkBike checkBike(membercollection, rentalcollection);
+        }
       }
       case 6:
       {

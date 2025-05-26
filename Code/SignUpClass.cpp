@@ -18,7 +18,6 @@ Member::Member(string id, string pw, string pnum){
 }
 
 void Member::doLogin() {
-cout << "debug doLogin" << endl;
     this->logincheck = 1;
 }
 
@@ -48,28 +47,27 @@ MemberCollection::MemberCollection() {
 
 void MemberCollection::createMember(string id, string pw, string pnum){
     MemArray[cnt++] = Member(id, pw, pnum);
-    cout << id << pw << pnum << endl;
+    cout << "> " << id << " " << pw << " " << pnum << endl;
 }
 
 void MemberCollection::checkSignUpMember(string id, string pw) {
-cout << "debug MemColl checkMem" << endl;
-cout << "debug cnt : " << cnt << endl; 
     if(id == "admin" && pw == "admin") {
-        cout << id << " " << pw << endl;
+        this->admin = 1;
+        cout << "> " << id << " " << pw << endl;
         return;
     }
 
     for (int i=0; i<cnt; i++) {
         if (MemArray[i].getID() == id && MemArray[i].getPW() == pw) {
             MemArray[i].doLogin();
-cout << "debug login success" << endl;
-            cout << MemArray[i].getID() << " " << MemArray[i].getPW() << endl;        
+            cout << "> " << MemArray[i].getID() << " " << MemArray[i].getPW() << endl;        
         }
     }    
 }
 
 Member* MemberCollection::getLoginMember() {
     for (int i=0; i<cnt; i++) {
+        if (this->admin == 1) break;
         if (MemArray[i].getlogincheck() == 1) {
             return &MemArray[i];
         }
@@ -78,11 +76,14 @@ Member* MemberCollection::getLoginMember() {
 }
 
 void MemberCollection::getLogoutMember() {
+    if (this->admin == 1) {
+        this->admin = 0;
+        return;
+    }
     for (int i=0; i<cnt; i++) {
         if (MemArray[i].getlogincheck() == 1) {
             MemArray[i].doLogout();
-cout << "debug logout success" << endl;
-            cout << MemArray[i].getID() << endl;
+            cout << "> " << MemArray[i].getID() << endl;
         }
     }
 }
@@ -116,13 +117,12 @@ BikeCollection::BikeCollection() {
 
 void BikeCollection::addNewBike(string bikeid, string bikename){
     BikeArray[cnt++] = Bike(bikeid, bikename);
-    cout << bikeid << bikename << endl;
+    cout << "> " << bikeid << " " << bikename << endl;
 }
 
-Bike* BikeCollection::getBike(string bikeid, string bikename) {
+Bike* BikeCollection::getBike(string bikeid) {
     for (int i=0; i<cnt; i++) {
-        if (BikeArray[i].getBikeID() == bikeid && BikeArray[i].getBikeName() == bikename) {
-            cout << BikeArray[i].getBikeID() << " " << BikeArray[i].getBikeName() << endl;        
+        if (BikeArray[i].getBikeID() == bikeid) {        
             return &BikeArray[i];
         }
     }
@@ -140,6 +140,13 @@ Rental::Rental(Member* member, Bike* bike) {
     BikePointer = bike;
 }
 
+Member* Rental::getMember() {
+    return MemPointer;
+}
+
+Bike* Rental::getBike() {
+    return BikePointer;
+}
 
 
 // RentalCollection
@@ -159,10 +166,16 @@ void RentalCollection::createRental(Member* member, Bike* bike) {
         return;
     }
     RenArray[cnt++] = Rental(member, bike);
-    cout << member->getID() << bike->getBikeID() << bike->getBikeName() << endl;
+    cout << "> "<< bike->getBikeID() << " " << bike->getBikeName() << endl;
 }
 
-
+void RentalCollection::getRental(Member* member) {
+    for(int i=0; i<cnt; i++){
+        if(RenArray[i].getMember()->getID() == member->getID()) {
+            cout << "> " << RenArray[i].getBike()->getBikeID() << " " << RenArray[i].getBike()->getBikeName() << endl;
+        }
+    }
+}
 
 // SignUpUI
 
@@ -198,7 +211,6 @@ void SignUp::createMember(string id, string pw, string pnum){
 void LoginUI::doLogin() {
     string id, pw;
     in_fp >> id >> pw;
-cout << "debug doLogin id pw : " << id << pw << endl;
     this->logincontroller->checkMember(id, pw);
 }
 
@@ -259,23 +271,25 @@ void EnrollUI::insertBikeInfo() {
     enrollcontroller->addNewBike(bikeid, bikename);
 }
 
-void EnrollUI::checkAdmin() {
-    
-}
 
 // Enroll
 
 
-Enroll::Enroll(BikeCollection* BikeCollection) {
+Enroll::Enroll(MemberCollection* MemberCollection, BikeCollection* BikeCollection) {
     enrollUI = new EnrollUI(this);
+    this->MemCollPointer = MemberCollection;
     this->BikeCollPointer = BikeCollection;
     enrollUI->startUI();
 }
 
-
 void Enroll::addNewBike(string bikeid, string bikename) {
+    if (MemCollPointer->getLoginMember() != NULL) {
+        cout << "admin 외 등록불가" << endl;
+        return;
+    }
     BikeCollPointer->addNewBike(bikeid, bikename);
 }
+
 
 // RentUI
 
@@ -301,11 +315,38 @@ Rent::Rent(MemberCollection* MemberCollection, BikeCollection* BikeCollection, R
 }
 
 void Rent::createRent() {
-    string bikeid, bikename;
-    in_fp >> bikeid >> bikename;
+    string bikeid;
+    in_fp >> bikeid;
     Member* loginMember = MemCollPointer->getLoginMember();
-    Bike* rentBike = BikeCollPointer->getBike(bikeid, bikename);
+    Bike* rentBike = BikeCollPointer->getBike(bikeid);
 
     RentCollPointer->createRental(loginMember, rentBike);
 }
 
+
+// checkBikeUI
+
+
+void checkBikeUI::startUI() {
+    this->checkBikeList();
+}
+
+void checkBikeUI::checkBikeList() {
+    checkrentcontroller->showBikeInfo();
+}
+
+
+// checkBike
+
+
+checkBike::checkBike(MemberCollection* MemberCollection, RentalCollection* RentalCollection) {
+    checkbikeUI = new checkBikeUI(this);
+    MemCollPointer = MemberCollection;
+    RentCollPointer = RentalCollection;
+    checkbikeUI->startUI();
+}
+
+void checkBike::showBikeInfo() {
+    Member* loginMember = MemCollPointer->getLoginMember();
+    RentCollPointer->getRental(loginMember);
+}

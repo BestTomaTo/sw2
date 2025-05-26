@@ -22,6 +22,7 @@ class Member {
 class MemberCollection {
     private:
         Member* MemArray;
+        int admin = 0;
         int cnt = 0; 
     public:
         MemberCollection();
@@ -48,7 +49,7 @@ class BikeCollection {
     public:
         BikeCollection();
         void addNewBike(string bikeid, string bikename);
-        Bike* getBike(string bikeid, string bikename); 
+        Bike* getBike(string bikeid); 
         
 };
 
@@ -59,6 +60,8 @@ class Rental{
     public:
         Rental();
         Rental(Member* member, Bike* bike);
+        Member* getMember();
+        Bike* getBike();
 };
 
 class RentalCollection{
@@ -68,7 +71,7 @@ class RentalCollection{
     public:
         RentalCollection();
         void createRental(Member* member, Bike* bike);
-        void getRental();        
+        void getRental(Member* member);        
 };
 
 class SignUpUI {
@@ -105,7 +108,6 @@ class Login {
     private:
         LoginUI* loginUI;
         MemberCollection* MemCollPointer;
-        string whoislogin;
     public:
         Login(MemberCollection* MemberCollection);
         void checkMember(string id, string pw);
@@ -142,15 +144,15 @@ class EnrollUI {
         EnrollUI(Enroll* controller) : enrollcontroller(controller) {}
         void startUI();
         void insertBikeInfo();
-        void checkAdmin();
 };
 
 class Enroll {
     private:
         EnrollUI* enrollUI;
+        MemberCollection* MemCollPointer;
         BikeCollection* BikeCollPointer;
     public:
-        Enroll(BikeCollection* BikeCollection);
+        Enroll(MemberCollection* MemberCollection, BikeCollection* BikeCollection);
         void addNewBike(string bikeid, string bikename);
 };
 
@@ -186,13 +188,15 @@ class checkBikeUI{
     public:
         checkBikeUI(checkBike* controller) : checkrentcontroller(controller) {}
         void startUI();
-        void checkBike();
+        void checkBikeList();
 };
 
 class checkBike{
     private:
+        checkBikeUI* checkbikeUI;
+        MemberCollection* MemCollPointer;
         RentalCollection* RentCollPointer;
     public:
-        checkBike(RentalCollection* RentalCollection);
+        checkBike(MemberCollection* MemberCollection, RentalCollection* RentalCollection);
         void showBikeInfo();
 };
