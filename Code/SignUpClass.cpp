@@ -1,9 +1,12 @@
 #include <string.h>
 #include <fstream>
+#include <vector>
+#include <algorithm>
 #include "allClasses.h"
 using namespace std;
 
 extern ifstream in_fp;
+extern ofstream out_fp;
 
 
 // Member
@@ -47,20 +50,20 @@ MemberCollection::MemberCollection() {
 
 void MemberCollection::createMember(string id, string pw, string pnum){
     MemArray[cnt++] = Member(id, pw, pnum);
-    cout << "> " << id << " " << pw << " " << pnum << endl;
+    out_fp << "> " << id << " " << pw << " " << pnum << endl;
 }
 
 void MemberCollection::checkSignUpMember(string id, string pw) {
     if(id == "admin" && pw == "admin") {
         this->admin = 1;
-        cout << "> " << id << " " << pw << endl;
+        out_fp << "> " << id << " " << pw << endl;
         return;
     }
 
     for (int i=0; i<cnt; i++) {
         if (MemArray[i].getID() == id && MemArray[i].getPW() == pw) {
             MemArray[i].doLogin();
-            cout << "> " << MemArray[i].getID() << " " << MemArray[i].getPW() << endl;        
+            out_fp << "> " << MemArray[i].getID() << " " << MemArray[i].getPW() << endl;        
         }
     }    
 }
@@ -78,12 +81,13 @@ Member* MemberCollection::getLoginMember() {
 void MemberCollection::getLogoutMember() {
     if (this->admin == 1) {
         this->admin = 0;
+        out_fp << "> " << "admin" << endl;
         return;
     }
     for (int i=0; i<cnt; i++) {
         if (MemArray[i].getlogincheck() == 1) {
             MemArray[i].doLogout();
-            cout << "> " << MemArray[i].getID() << endl;
+            out_fp << "> " << MemArray[i].getID() << endl;
         }
     }
 }
@@ -117,7 +121,7 @@ BikeCollection::BikeCollection() {
 
 void BikeCollection::addNewBike(string bikeid, string bikename){
     BikeArray[cnt++] = Bike(bikeid, bikename);
-    cout << "> " << bikeid << " " << bikename << endl;
+    out_fp << "> " << bikeid << " " << bikename << endl;
 }
 
 Bike* BikeCollection::getBike(string bikeid) {
@@ -144,7 +148,7 @@ Member* Rental::getMember() {
     return MemPointer;
 }
 
-Bike* Rental::getBike() {
+Bike* Rental::getBike() const {
     return BikePointer;
 }
 
@@ -158,24 +162,40 @@ RentalCollection::RentalCollection() {
 
 void RentalCollection::createRental(Member* member, Bike* bike) {
     if (member == NULL) {
-        cout << "Error: 로그인된 회원이 없습니다." << endl;
+        out_fp << "Error: 로그인된 회원이 없습니다." << endl;
         return;
     }
     if (bike == NULL) {
-        cout << "Error: 해당 자전거가 없습니다." << endl;
+        out_fp << "Error: 해당 자전거가 없습니다." << endl;
         return;
     }
     RenArray[cnt++] = Rental(member, bike);
-    cout << "> "<< bike->getBikeID() << " " << bike->getBikeName() << endl;
+    out_fp << "> "<< bike->getBikeID() << " " << bike->getBikeName() << endl;
 }
 
 void RentalCollection::getRental(Member* member) {
-    for(int i=0; i<cnt; i++){
-        if(RenArray[i].getMember()->getID() == member->getID()) {
-            cout << "> " << RenArray[i].getBike()->getBikeID() << " " << RenArray[i].getBike()->getBikeName() << endl;
+    if (member == NULL) {
+        out_fp << "Error: 로그인된 회원이 없습니다." << endl;
+        return;
+    }
+
+    vector<Rental> rentals; // 정렬을 위한 벡터
+
+    for (int i = 0; i < cnt; i++) {
+        if (RenArray[i].getMember()->getID() == member->getID()) {
+            rentals.push_back(RenArray[i]);
         }
     }
+
+    sort(rentals.begin(), rentals.end(), [](const Rental& a, const Rental& b) {
+        return a.getBike()->getBikeID() < b.getBike()->getBikeID();
+    });
+
+    for (const auto& rental : rentals) {
+        out_fp << "> " << rental.getBike()->getBikeID() << " " << rental.getBike()->getBikeName() << endl;
+    }
 }
+
 
 // SignUpUI
 
@@ -201,7 +221,9 @@ SignUp::SignUp(MemberCollection* MemberCollection) {
 }
 
 void SignUp::createMember(string id, string pw, string pnum){
+    out_fp << "1.1 회원가입" << endl;
     MemCollPointer->createMember(id, pw, pnum);
+    out_fp << "" << endl;
 }
 
 
@@ -229,7 +251,9 @@ Login::Login(MemberCollection* MemberCollection) {
 }
 
 void Login::checkMember(string id, string pw){
+    out_fp << "2.1 로그인" << endl;
     MemCollPointer->checkSignUpMember(id, pw);
+    out_fp << "" << endl;
 }
 
 
@@ -255,7 +279,9 @@ Logout::Logout(MemberCollection* MemberCollection) {
 }
 
 void Logout::getLogoutMember() {
+    out_fp << "2.2 로그아웃" << endl;
     MemCollPointer->getLogoutMember();
+    out_fp << "" << endl;
 }
 
 
@@ -284,10 +310,12 @@ Enroll::Enroll(MemberCollection* MemberCollection, BikeCollection* BikeCollectio
 
 void Enroll::addNewBike(string bikeid, string bikename) {
     if (MemCollPointer->getLoginMember() != NULL) {
-        cout << "admin 외 등록불가" << endl;
+        out_fp << "admin 외 등록불가" << endl;
         return;
     }
+    out_fp << "3.1 자전거 등록" << endl;
     BikeCollPointer->addNewBike(bikeid, bikename);
+    out_fp << "" << endl;
 }
 
 
@@ -320,7 +348,9 @@ void Rent::createRent() {
     Member* loginMember = MemCollPointer->getLoginMember();
     Bike* rentBike = BikeCollPointer->getBike(bikeid);
 
+    out_fp << "4.1 자전거 대여" << endl;
     RentCollPointer->createRental(loginMember, rentBike);
+    out_fp << "" << endl;
 }
 
 
@@ -348,5 +378,7 @@ checkBike::checkBike(MemberCollection* MemberCollection, RentalCollection* Renta
 
 void checkBike::showBikeInfo() {
     Member* loginMember = MemCollPointer->getLoginMember();
+    out_fp << "5.1 자전거 대여 리스트" << endl;
     RentCollPointer->getRental(loginMember);
+    out_fp << "" << endl;
 }

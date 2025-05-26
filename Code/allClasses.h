@@ -61,7 +61,7 @@ class Rental{
         Rental();
         Rental(Member* member, Bike* bike);
         Member* getMember();
-        Bike* getBike();
+        Bike* getBike() const;
 };
 
 class RentalCollection{
