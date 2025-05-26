@@ -1,3 +1,6 @@
+#ifndef MEMBER_H
+#define MEMBER_H
+
 #include <string>
 using namespace std;
 
@@ -14,3 +17,5 @@ class Member {
         string getID();
         string getPW();
 };
+
+#endif

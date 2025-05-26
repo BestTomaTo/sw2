@@ -1,15 +1,19 @@
 #include "Rent.h"
 using namespace std;
 
-Rent::Rent(MemberCollection* MemberCollection, BikeCollection* BikeCollection, RentalCollection* RentalCollection) {
+Rent::Rent(MemberCollection* MemberCollection, BikeCollection* BikeCollection, RentalCollection* RentalCollection, FileManager* filemanager) {
     rentUI = new RentUI(this);
     MemCollPointer = MemberCollection;
     BikeCollPointer = BikeCollection;
     RentCollPointer = RentalCollection;
+    this->filemanager = filemanager;
     rentUI->startUI();
 }
 
 void Rent::createRent() {
+    ifstream& in_fp = filemanager->getInputStream();
+    ofstream& out_fp = filemanager->getOutputStream();
+
     string bikeid;
     in_fp >> bikeid;
     Member* loginMember = MemCollPointer->getLoginMember();

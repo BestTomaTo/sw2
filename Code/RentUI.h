@@ -1,5 +1,10 @@
+#ifndef RENTUI_H
+#define RENTUI_H
+
 #include "Rent.h"
 using namespace std;
+
+class Rent;
 
 class RentUI {
     private:
@@ -9,3 +14,5 @@ class RentUI {
         void startUI();
         void rentBike();
 };
+
+#endif

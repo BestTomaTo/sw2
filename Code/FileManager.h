@@ -1,3 +1,6 @@
+#ifndef FILEMANANGER_H
+#define FILEMANANGER_H
+
 #include <fstream>
 #include <string>
 using namespace std;
@@ -33,3 +36,5 @@ public:
         out_fp.flush();
     }
 };
+
+#endif

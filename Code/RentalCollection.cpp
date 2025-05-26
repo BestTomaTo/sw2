@@ -4,11 +4,14 @@
 #include <algorithm>
 using namespace std;
 
-RentalCollection::RentalCollection() {
+RentalCollection::RentalCollection(FileManager* filemanager) {
     RenArray = new Rental[100];
+    this->filemanager = filemanager;
 }
 
 void RentalCollection::createRental(Member* member, Bike* bike) {
+    ofstream& out_fp = filemanager->getOutputStream();
+
     if (member == NULL) {
         out_fp << "Error: 로그인된 회원이 없습니다." << endl;
         return;
@@ -22,6 +25,8 @@ void RentalCollection::createRental(Member* member, Bike* bike) {
 }
 
 void RentalCollection::getRental(Member* member) {
+    ofstream& out_fp = filemanager->getOutputStream();
+    
     if (member == NULL) {
         out_fp << "Error: 로그인된 회원이 없습니다." << endl;
         return;

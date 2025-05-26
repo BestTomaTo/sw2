@@ -1,3 +1,6 @@
+#ifndef RENTAL_H
+#define RENTAL_H
+
 #include <string>
 #include "Member.h"
 #include "Bike.h"
@@ -13,3 +16,5 @@ class Rental{
         Member* getMember();
         Bike* getBike() const;
 };
+
+#endif

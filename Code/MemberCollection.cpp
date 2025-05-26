@@ -2,16 +2,21 @@
 #include "MemberCollection.h"
 using namespace std;
 
-MemberCollection::MemberCollection() {
+MemberCollection::MemberCollection(FileManager* filemanager) {
     MemArray = new Member[100];
+    this->filemanager = filemanager;
 }
 
 void MemberCollection::createMember(string id, string pw, string pnum){
+    ofstream& out_fp = filemanager->getOutputStream();
+    
     MemArray[cnt++] = Member(id, pw, pnum);
     out_fp << "> " << id << " " << pw << " " << pnum << endl;
 }
 
 void MemberCollection::checkSignUpMember(string id, string pw) {
+    ofstream& out_fp = filemanager->getOutputStream();
+    
     if(id == "admin" && pw == "admin") {
         this->admin = 1;
         out_fp << "> " << id << " " << pw << endl;
@@ -37,6 +42,8 @@ Member* MemberCollection::getLoginMember() {
 }
 
 void MemberCollection::getLogoutMember() {
+    ofstream& out_fp = filemanager->getOutputStream();
+    
     if (this->admin == 1) {
         this->admin = 0;
         out_fp << "> " << "admin" << endl;

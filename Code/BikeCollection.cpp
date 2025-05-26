@@ -2,11 +2,13 @@
 #include "BikeCollection.h"
 using namespace std;
 
-BikeCollection::BikeCollection() {
+BikeCollection::BikeCollection(FileManager* filemanager) {
     BikeArray = new Bike[100];
+    this->filemanager = filemanager;
 }
 
 void BikeCollection::addNewBike(string bikeid, string bikename){
+    ofstream& out_fp = filemanager->getOutputStream();
     BikeArray[cnt++] = Bike(bikeid, bikename);
     out_fp << "> " << bikeid << " " << bikename << endl;
 }

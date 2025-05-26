@@ -1,5 +1,10 @@
+#ifndef CHECKBIKEUI_H
+#define CHECKBIKEUI_H
+
 #include "checkBike.h"
 using namespace std;
+
+class checkBike;
 
 class checkBikeUI{
     private:
@@ -9,3 +14,5 @@ class checkBikeUI{
         void startUI();
         void checkBikeList();
 };
+
+#endif

@@ -1,5 +1,10 @@
+#ifndef LOGOUTUI_H
+#define LOGOUTUI_H
+
 #include "Logout.h"
 using namespace std;
+
+class Logout;
 
 class LogoutUI{
     private:
@@ -9,3 +14,5 @@ class LogoutUI{
         void startUI();
         void doLogout();
 };
+
+#endif

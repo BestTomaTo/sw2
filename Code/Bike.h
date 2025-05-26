@@ -1,3 +1,6 @@
+#ifndef BIKE_H
+#define BIKE_H
+
 #include <string>
 using namespace std;
 
@@ -10,3 +13,5 @@ class Bike {
         string getBikeID();
         string getBikeName();
 };
+
+#endif

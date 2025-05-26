@@ -7,6 +7,8 @@ void EnrollUI::startUI() {
 }
 
 void EnrollUI::insertBikeInfo() {
+    ifstream& in_fp = filemanager->getInputStream();
+    
     string bikeid, bikename;
     in_fp >> bikeid >> bikename;
     enrollcontroller->addNewBike(bikeid, bikename);
